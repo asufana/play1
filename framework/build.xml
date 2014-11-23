@@ -52,13 +52,7 @@
     </target>
 
     <target name="version" unless="version">
-        <exec executable="git" outputproperty="gitversion" errorproperty="giterror" failonerror="false" failifexecutionfails="false">
-            <arg value="describe" />
-            <arg value="--always" />
-        </exec>
-        <condition property="version" value="${baseversion}-${gitversion}" else="${baseversion}-localbuild">
-            <equals arg1="" arg2="${giterror}" trim="true" />
-        </condition>
+        <property name="version" value="1.2.5.4-java8" />
         <echo message="Version ${version}"></echo>
     </target>
 
@@ -155,7 +149,7 @@
             <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.port},server=y,suspend=n"/>
             <jvmarg value="${profiler.info.jvmargs.agent}"/>
             <jvmarg value="${jvm.memory}"/>
-        </java>	
+        </java>  
     </target>
 
     <target name="nb-run-application">
@@ -179,7 +173,7 @@
             <jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.port},server=y,suspend=n"/>
             <jvmarg value="${jvm.memory}"/>
-        </java>	
+        </java>  
     </target>
 
     <target name="nb-debug">
