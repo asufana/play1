@@ -10,10 +10,10 @@ require:    &allDependencies
     - antlr 2.7.7
     - c3p0 0.9.1.2
     - cglib -> cglib-nodep 3.1
-    - com.google.code.gson -> gson 2.2 
+    - com.google.code.gson -> gson 2.2
     - com.jamonapi -> jamon 2.7
     - com.ning -> async-http-client 1.7.4
-    - commons-beanutils 1.8.3  
+    - commons-beanutils 1.8.3
     - commons-codec 1.4
     - commons-collections 3.1
     - commons-email 1.2
@@ -28,7 +28,7 @@ require:    &allDependencies
     - javax.mail -> mail 1.4.3
     - javax.inject 1.0
     - jaxen 1.1
-    - joda-time 2.1 
+    - joda-time 2.1
     - junit 4.10
     - jregex 1.2_01
     - log4j 1.2.16
@@ -42,7 +42,7 @@ require:    &allDependencies
     - org.apache.ivy -> ivy 2.2.0
     - org.bouncycastle -> bcprov-jdk15 1.45
     - org.codehaus.groovy -> groovy-all 1.8.6
-    - org.eclipse.jdt.core 3.7.1.v_B76_R37x 
+    - org.hibernate -> hibernate-core 3.6.10.Final
     - org.eclipse.jdt.core-3.9.50.v20140317-1741.jar
     - org.hibernate -> hibernate-commons-annotations 3.2.0.Final
     - org.hibernate -> hibernate-entitymanager 3.6.10.Final
@@ -73,7 +73,7 @@ repositories:
         type:       local
         artifact:   "${play.path}/framework/lib/[artifact]-[revision].jar"
         contains:   *allDependencies
-        
+
     - playCoreCrud:
         type:       local
         artifact:   "${play.path}/modules/crud"
@@ -86,9 +86,9 @@ repositories:
         contains:
             - play -> secure $version
 
-    - playModules:  
+    - playModules:
         type:       chain
-        using:            
+        using:
             - playLocalModules:
                 type:       local
                 descriptor: "${play.path}/modules/[module]-[revision]/conf/dependencies.yml"
@@ -98,7 +98,7 @@ repositories:
                 type:       http
                 descriptor: "http://www.playframework.org/modules/repo/[module]/[revision]/dependencies.yml"
                 artifact:   "http://www.playframework.org/modules/[module]-[revision].zip"
-                
+
         contains:
             - play -> *
 
