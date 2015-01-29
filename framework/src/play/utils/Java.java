@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Finally;
 import play.mvc.With;
+import static java.util.Collections.sort;
 
 /**
  * Java utils
@@ -94,17 +96,17 @@ public class Java {
      * @return The method or null
      */
     public static Method findActionMethod(String name, Class clazz) {
-	    // We don't want to check the views
-	  	while (!clazz.getName().equals("java.lang.Object")) {
-		    for (Method m : clazz.getDeclaredMethods()) {
-			    if (m.getName().equalsIgnoreCase(name) && Modifier.isPublic(m.getModifiers())) {
+      // We don't want to check the views
+      while (!clazz.getName().equals("java.lang.Object")) {
+        for (Method m : clazz.getDeclaredMethods()) {
+          if (m.getName().equalsIgnoreCase(name) && Modifier.isPublic(m.getModifiers())) {
                     // Check that it is not an intercepter
                     if (!m.isAnnotationPresent(Before.class) && !m.isAnnotationPresent(After.class) && !m.isAnnotationPresent(Finally.class)) {
                         return m;
                     }
                 }
             }
-		    clazz = clazz.getSuperclass();
+        clazz = clazz.getSuperclass();
         }
         return null;
     }
@@ -180,7 +182,7 @@ public class Java {
         {
             invokedClass = assignableClasses.get(0);
         }
-        
+
         return Java.invokeStaticOrParent(invokedClass, method, args);
     }
 
@@ -501,10 +503,35 @@ class JavaWithCaching {
                 }
             }
 
+            sortByPriority(methods, annotationType);
+
             // store it in cache
             classAndAnnotation2Methods.put( key, methods);
 
             return methods;
+        }
+    }
+
+    //https://github.com/codeborne/play/commit/41290738acd464429d60948e3c8b1142fb43bc25
+    private void sortByPriority(List<Method> methods, final Class<? extends Annotation> annotationType) {
+        try {
+            final Method priority = annotationType.getMethod("priority");
+            sort(methods, new Comparator<Method>() {
+                @Override public int compare(Method m1, Method m2) {
+                    try {
+                        Integer priority1 = (Integer) priority.invoke(m1.getAnnotation(annotationType));
+                        Integer priority2 = (Integer) priority.invoke(m2.getAnnotation(annotationType));
+                        return priority1.compareTo(priority2);
+                    }
+                    catch (Exception e) {
+                        // should not happen
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
+        catch (NoSuchMethodException e) {
+            // no need to sort - this annotation doesn't have priority() method
         }
     }
 
